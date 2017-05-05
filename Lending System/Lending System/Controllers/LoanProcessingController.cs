@@ -95,9 +95,30 @@ namespace Lending_System.Controllers
         }
 
         //CRUD TESTING
-        public ActionResult Edit()
+        public ActionResult Edit(int id)
         {
-            return View();
+            db_lendingEntities db = new db_lendingEntities();
+
+            if (Session["UserId"] != null)
+            {
+
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                tbl_loan_processing tbl_loan_processing = db.tbl_loan_processing.Find(id);
+                if (tbl_loan_processing == null)
+                {
+                    return HttpNotFound();
+                }
+                LoadCustomer();
+                LoadLoanType();
+                return View(tbl_loan_processing);
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
         }
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
